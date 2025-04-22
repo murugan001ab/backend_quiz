@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-08zij9ob2ct*rw1%40tqbzxkh2e&5rcw=o8$00@u=lq9ra-(@b
 DEBUG = True
 
 # ALLOWED_HOSTS = ["*"]
-ALLOWED_HOSTS = ['quiz.onrender.com']
+ALLOWED_HOSTS = ["*"]
 
 
 
