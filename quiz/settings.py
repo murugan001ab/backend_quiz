@@ -23,9 +23,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-08zij9ob2ct*rw1%40tqbzxkh2e&5rcw=o8$00@u=lq9ra-(@b"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['quiz.onrender.com']
+
 
 
 # Application definition
@@ -52,6 +54,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
      'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True  # Allow any frontend to access the API
@@ -133,10 +136,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = "static/"
 import os
-STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
+
+STATIC_URL = "static/"
+
+# STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 # Default primary key field type
@@ -144,16 +151,40 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# import os
+
+# SECRET_KEY = os.environ.get('SECRET_KEY', 'dummysecret')
+# DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+
+# import dj_database_url
+
+# DATABASES = {
+#     'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
+# }
+
+
+
+from decouple import config
+import dj_database_url
 import os
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'dummysecret')
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
 
-import dj_database_url
-
+# Database
 DATABASES = {
-    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
+    'default': dj_database_url.config(default=config('DATABASE_URL'))
 }
 
+# Static files
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# WhiteNoise (for serving static files)
+MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    # ... your other middleware
+]
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
